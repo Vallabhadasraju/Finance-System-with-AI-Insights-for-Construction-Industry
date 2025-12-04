@@ -1,0 +1,19 @@
+# Backend API
+fastapi
+uvicorn[standard]
+sqlalchemy
+pymysql
+passlib[bcrypt]
+bcrypt
+python-dotenv
+pandas
+numpy
+scikit-learn
+joblib
+
+# ML / Training
+imbalanced-learn
+matplotlib
+
+# Google Gemini SDK used in Backend/app.py
+google-genai

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Transaction Detection - Login/Signup</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-box login">
+            <form method="POST" action="/login" id="loginForm">
+                <h1>Login</h1>
+                <div class="input-box">
+                    <label>Email:</label>
+                    <input type="email" name="email" id="emailLogin" placeholder="Enter your email" required>
+                    <i class='bx bxs-envelope'></i>
+                </div>
+                <div class="input-box">
+                    <label>Password:</label>
+                    <div class="input-container">
+                        <input type="password" id="passwordLogin" name="password" placeholder="Enter password" required>
+                        <span class="eye-icon" onclick="togglePasswordVisibility('passwordLogin', this)">👁</span>
+                    </div>
+                </div>
+                <div class="input-box">
+                    <label>PIN:</label>
+                    <div class="input-container">
+                        <input type="password" id="pinLogin" name="pin" pattern="[0-9]{4}" maxlength="4" placeholder="4-digit PIN" required>
+                        <span class="eye-icon" onclick="togglePinVisibility('pinLogin', this)">👁</span>
+                    </div>
+                    <div id="pinErrorLogin" class="error">Invalid PIN! Please enter a 4-digit PIN.</div>
+                </div>
+                <div class="forgot-link">
+                    <a href="/forgot">Forgot PIN/Password?</a>
+                </div>
+
+                <button type="submit" class="btn">Login</button>
+                <p>or login with social platforms</p>
+                <div class="social-icons">
+                    <a href="#" id="googleLogin"><i class='bx bxl-google'></i></a>
+                    <a href="#" id="facebookLogin"><i class='bx bxl-facebook'></i></a>
+                    <a href="#" id="githubLogin"><i class='bx bxl-github'></i></a>
+                    <a href="#" id="linkedinLogin"><i class='bx bxl-linkedin'></i></a>
+                </div>
+            </form>
+        </div>
+
+        <div class="form-box register">
+            <form method="POST" action="/register" onsubmit="return validateAndSubmitForm(event)">
+                <h1>Registration</h1>
+                <div class="input-box">
+                    <label>First Name:</label>
+                    <input type="text" id="firstName" name="firstName" placeholder="First Name" required>
+                    <i class='bx bxs-user'></i>
+                </div>
+                <div class="input-box">
+                    <label>Last Name:</label>
+                    <input type="text" id="lastName" name="lastName" placeholder="Last Name" required>
+                    <i class='bx bxs-user'></i>
+                </div>
+                <div class="input-box">
+                    <label>Gmail:</label>
+                    <input type="email" id="email" name="email" placeholder="Gmail address" required>
+                    <i class='bx bxs-envelope'></i>
+                </div>
+                <div class="input-box">
+                    <label>Mobile Number:</label>
+                    <div class="phone-input-container">
+                        <select id="countryCode" name="countryCode" required aria-label="Country Code">
+                            <option value="+1">+1 (US)</option>
+                            <option value="+44">+44 (UK)</option>
+                            <option value="+91">+91 (India)</option>
+                            <option value="+33">+33 (France)</option>
+                            <option value="+49">+49 (Germany)</option>
+                            <option value="+81">+81 (Japan)</option>
+                            <option value="+86">+86 (China)</option>
+                            <option value="+55">+55 (Brazil)</option>
+                            <option value="+7">+7 (Russia)</option>
+                            <option value="+61">+61 (Australia)</option>
+                        </select>
+                        <div class="input-container">
+                            <input type="tel" id="mobile" name="mobile" placeholder="Mobile Number" pattern="[0-9]{10}" required>
+                            <i class='bx bxs-phone'></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-box">
+                    <label>Password:</label>
+                    <div class="input-container">
+                        <input type="password" id="password" name="password" placeholder="Enter password" required>
+                        <span class="eye-icon" onclick="togglePasswordVisibility('password', this)">👁</span>
+                    </div>
+                </div>
+                <div class="input-box">
+                    <label>Re-enter Password:</label>
+                    <div class="input-container">
+                        <input type="password" id="confirmPassword" placeholder="Re-enter password" required>
+                        <span class="eye-icon" onclick="togglePasswordVisibility('confirmPassword', this)">👁</span>
+                    </div>
+                    <div id="passwordError" class="error">Passwords do not match!</div>
+                </div>
+                <div class="input-box">
+                    <label>Set PIN:</label>
+                    <div class="input-container">
+                        <input type="password" id="pin" name="pin" pattern="[0-9]{4}" maxlength="4" placeholder="4-digit PIN" required>
+                        <span class="eye-icon" onclick="togglePinVisibility('pin', this)">👁</span>
+                    </div>
+                </div>
+                <button type="submit" class="btn">Register</button>
+                <p>or register with social platforms</p>
+                <div class="social-icons">
+                    <a href="/auth/google" id="googleRegister"><i class='bx bxl-google'></i></a>
+                    <a href="/auth/facebook" id="facebookRegister"><i class='bx bxl-facebook'></i></a>
+                    <a href="/auth/github" id="githubRegister"><i class='bx bxl-github'></i></a>
+                    <a href="/auth/linkedin" id="linkedinRegister"><i class='bx bxl-linkedin'></i></a>
+                </div>
+            </form>
+        </div>
+
+        <div class="toggle-box">
+            <div class="toggle-panel toggle-left">
+                <h1 style="color: #0a0a0a;">Hello, Welcome!</h1>
+                <p style="color: #0a0a0a;">Don't have an account?</p>
+                <button class="btn register-btn">Register</button>
+            </div>
+            <div class="toggle-panel toggle-right">
+                <h1 style="color: #0a0a0a;">Welcome Back!</h1>
+                <p style="color: #0a0a0a;">Already have an account?</p>
+                <button class="btn login-btn">Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password/PIN Modal -->
+    <div id="forgotModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Reset Password/PIN</h2>
+            <form id="forgotForm">
+                <div class="input-box">
+                    <label>Email:</label>
+                    <input type="email" id="forgotEmail" placeholder="Enter your email" required>
+                    <i class='bx bxs-envelope'></i>
+                </div>
+                <div class="reset-options">
+                    <label>
+                        <input type="checkbox" id="resetPassword" checked> Reset Password
+                    </label>
+                    <label>
+                        <input type="checkbox" id="resetPIN" checked> Reset PIN
+                    </label>
+                </div>
+                <button type="submit" class="btn">Send Reset Link</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <!-- Your Firebase config -->
+    <script src="firebase-config.js"></script>
+
+    <!-- Your main script -->
+    <script src="script.js"></script>
+</body>
+</html>

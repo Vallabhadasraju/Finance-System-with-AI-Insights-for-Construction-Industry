@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Transaction Detection - AI-Powered Security</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        :root {
+            --primary: #00ffff;
+            --background: #0a0a0a;
+            --card-bg: #121212;
+            --accent: #0080ff;
+            --text: #fff;
+            --shadow: 0 0 30px rgba(0,255,255,0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--background);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: var(--card-bg);
+            border-bottom: 2px solid var(--primary);
+            box-shadow: 0 0 20px var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-container {
+            max-width: 1350px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 32px;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+            text-shadow: 0 0 8px var(--primary);
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 35px;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: var(--text);
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            padding: 6px 0;
+            text-decoration: none;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .nav-link.active,
+        .nav-link:hover {
+            color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .nav-signin {
+            background: var(--primary);
+            color: var(--background) !important;
+            border-radius: 8px;
+            padding: 8px 22px;
+            font-weight: 600;
+            box-shadow: 0 0 8px var(--primary);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-signin::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-signin:hover::before {
+            left: 100%;
+        }
+
+        .nav-signin:hover {
+            background: var(--accent);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 20px rgba(0,255,255,0.4);
+        }
+
+        .nav-signin:active {
+            transform: translateY(0) scale(1.02);
+            transition: all 0.1s;
+        }
+
+        .nav-signin.clicked {
+            transform: scale(0.95);
+            opacity: 0.8;
+        }
+
+        .navbar-toggle {
+            display: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--primary);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .navbar-toggle:hover {
+            transform: scale(1.1);
+            background: rgba(0,255,255,0.1);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1300px;
+            margin: 60px auto 0 auto;
+            padding: 60px 32px 0 32px;
+            flex-wrap: wrap;
+        }
+
+        .hero-content {
+            flex: 1 1 400px;
+            padding-right: 40px;
+        }
+
+        .hero-title {
+            font-size: 46px;
+            font-weight: 700;
+            color: var(--primary);
+            text-shadow: 0 0 14px var(--primary);
+            margin-bottom: 25px;
+        }
+
+        .hero-subtitle {
+            font-size: 19px;
+            color: var(--text);
+            opacity: 0.85;
+            margin-bottom: 32px;
+            font-weight: 400;
+        }
+
+        .hero-btn {
+            background: var(--primary);
+            color: var(--background);
+            border: none;
+            padding: 15px 36px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0,255,255,0.25);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-btn.clicked {
+            transform: scale(0.95);
+            opacity: 0.8;
+        }
+
+        .hero-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .hero-btn:hover::before {
+            left: 100%;
+        }
+
+        .hero-btn:hover {
+            background: var(--accent);
+            box-shadow: 0 8px 35px rgba(0,255,255,0.4);
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        .hero-btn:active {
+            transform: translateY(-1px) scale(1.02);
+            transition: all 0.1s;
+        }
+
+        .hero-image {
+            flex: 0 1 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-image img {
+            width: 380px;
+            max-width: 100%;
+            border-radius: 28px;
+            box-shadow: 0 0 50px rgba(0,255,255,0.3), 0 0 100px rgba(0,255,255,0.1);
+            background: rgba(0,255,255,0.06);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 2px solid rgba(0,255,255,0.2);
+        }
+
+        .hero-image img:hover {
+            transform: scale(1.12) rotate(4deg);
+            box-shadow: 0 0 80px rgba(0,255,255,0.6), 0 0 150px rgba(0,255,255,0.3), 0 0 200px rgba(0,255,255,0.1);
+            filter: brightness(1.2) contrast(1.15) saturate(1.1);
+            border-color: var(--primary);
+        }
+
+        /* Features Section */
+        .features-section {
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            margin: 60px auto;
+            max-width: 1200px;
+            padding: 44px 32px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 38px;
+            text-shadow: 0 0 8px var(--primary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+            gap: 34px;
+        }
+
+        .feature-card {
+            background: rgba(0,255,255,0.09);
+            border: 1.5px solid rgba(0,255,255,0.14);
+            border-radius: 16px;
+            box-shadow: 0 0 20px rgba(0,255,255,0.09);
+            text-align: center;
+            padding: 38px 22px 28px 22px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,255,255,0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 15px 50px rgba(0,255,255,0.25);
+            border-color: var(--primary);
+        }
+
+        .feature-card i {
+            font-size: 42px;
+            color: var(--primary);
+            margin-bottom: 18px;
+            filter: drop-shadow(0 0 10px var(--primary));
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            font-size: 15px;
+            opacity: 0.85;
+        }
+
+        /* How Section */
+        .how-section {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 40px 32px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .how-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 32px;
+            margin-top: 30px;
+        }
+
+        .how-step {
+            background: rgba(0,255,255,0.07);
+            border: 1.5px solid rgba(0,255,255,0.14);
+            border-radius: 14px;
+            box-shadow: 0 0 16px rgba(0,255,255,0.12);
+            padding: 32px 20px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .how-step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,255,255,0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .how-step:hover::before {
+            left: 100%;
+        }
+
+        .how-step:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 40px rgba(0,255,255,0.2);
+            border-color: var(--primary);
+        }
+
+        .step-number {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--background);
+            font-size: 22px;
+            font-weight: 700;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            line-height: 38px;
+            margin-bottom: 15px;
+            box-shadow: 0 0 14px var(--primary);
+        }
+
+        .how-step h3 {
+            font-size: 18px;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .how-step p {
+            font-size: 15px;
+            opacity: 0.85;
+            margin-bottom: 0;
+        }
+
+        /* Team Section */
+        .team-section {
+            max-width: 1100px;
+            margin: 60px auto;
+            padding: 44px 32px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .team-category {
+            margin-bottom: 50px;
+        }
+
+        .team-category h3 {
+            font-size: 24px;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+            text-shadow: 0 0 10px var(--primary);
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .team-card {
+            background: linear-gradient(135deg, rgba(0,255,255,0.08) 0%, rgba(0,128,255,0.05) 100%);
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,255,255,0.1);
+            padding: 25px 20px;
+            text-align: center;
+            border: 2px solid rgba(0,255,255,0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0,255,255,0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .team-card:hover::before {
+            left: 100%;
+        }
+
+        .team-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 15px 40px rgba(0,255,255,0.2);
+            border-color: var(--primary);
+        }
+
+        .team-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            border: 3px solid var(--primary);
+            box-shadow: 0 0 20px rgba(0,255,255,0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            background: transparent;
+            overflow: hidden;
+        }
+        .team-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center top;
+            image-rendering: auto;
+            filter: contrast(1.1) saturate(1.08) brightness(1.03);
+            will-change: transform;
+            display: block;
+        }
+
+        .team-card:hover .team-avatar {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0,255,255,0.5);
+        }
+
+        .team-card h3 {
+            font-size: 16px;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .team-social {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(0,255,255,0.1);
+            border: 1px solid rgba(0,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 18px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .social-icon:hover {
+            background: var(--primary);
+            color: var(--background);
+            transform: translateY(-2px) scale(1.1);
+            box-shadow: 0 5px 15px rgba(0,255,255,0.4);
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 44px 22px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        /* Contact Section */
+        .contact-section {
+            max-width: 1000px;
+            margin: 60px auto;
+            padding: 50px 30px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .contact-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 15px;
+            border: 2px solid rgba(0,255,255,0.2);
+            border-radius: 12px;
+            background: rgba(0,255,255,0.05);
+            color: var(--text);
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0,255,255,0.3);
+            background: rgba(0,255,255,0.08);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .contact-submit {
+            grid-column: 1 / -1;
+            text-align: center;
+        }
+
+        .contact-btn {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: var(--background);
+            padding: 15px 40px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 5px 20px rgba(0,255,255,0.3);
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,255,255,0.4);
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .contact-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0,255,255,0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(0,255,255,0.1);
+        }
+
+        .contact-item i {
+            font-size: 30px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .contact-item h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .contact-item p {
+            color: var(--text);
+            opacity: 0.8;
+        }
+
+        .faq-list {
+            margin-top: 30px;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+            border-radius: 16px;
+            border: 2px solid rgba(0,255,255,0.15);
+            background: linear-gradient(135deg, rgba(0,255,255,0.08) 0%, rgba(0,128,255,0.05) 100%);
+            box-shadow: 0 4px 20px rgba(0,255,255,0.1);
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .faq-item:hover {
+            border-color: rgba(0,255,255,0.3);
+            box-shadow: 0 8px 30px rgba(0,255,255,0.15);
+            transform: translateY(-2px);
+        }
+
+        .faq-question {
+            width: 100%;
+            padding: 18px;
+            background: transparent;
+            border: none;
+            text-align: left;
+            font-size: 16px;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+
+        .faq-question::before {
+            content: '+';
+            position: absolute;
+            right: 18px;
+            font-size: 20px;
+            font-weight: bold;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .faq-item.open .faq-question::before {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            padding: 0 18px;
+            font-size: 15px;
+            color: var(--text);
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 200px;
+            padding: 0 18px 18px 18px;
+            opacity: 0.85;
+        }
+
+        .faq-item.open .faq-question {
+            background: rgba(0,255,255,0.11);
+        }
+
+        /* Footer */
+        .main-footer {
+            background: var(--card-bg);
+            color: #ccc;
+            text-align: center;
+            padding: 24px 0;
+            font-size: 15px;
+            border-top: 1.5px solid var(--primary);
+            margin-top: 60px;
+            letter-spacing: 1px;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 900px) {
+            .navbar-container,
+            .hero-section,
+            .features-section,
+            .how-section,
+            .team-section,
+            .faq-section {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+            .hero-section {
+                flex-direction: column;
+                padding-top: 38px;
+            }
+            .hero-content {
+                padding-right: 0;
+                margin-bottom: 32px;
+            }
+        }
+
+        @media screen and (max-width: 650px) {
+            .navbar-menu {
+                flex-direction: column;
+                gap: 0;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                width: 100vw;
+                background: var(--card-bg);
+                box-shadow: 0 8px 30px rgba(0,255,255,0.19);
+                padding: 18px 0;
+                display: none;
+                z-index: 110;
+            }
+            .navbar-menu.show {
+                display: flex;
+            }
+            .navbar-toggle {
+                display: block;
+            }
+            .navbar-container {
+                padding-left: 14px;
+                padding-right: 14px;
+            }
+            .hero-title {
+                font-size: 28px;
+            }
+            .section-title {
+                font-size: 24px;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .team-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 20px;
+            }
+            
+            .team-avatar {
+                width: 96px;
+                height: 96px;
+                font-size: 30px;
+            }
+            
+            .team-card h3 {
+                font-size: 14px;
+            }
+            
+            .social-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 16px;
+            }
+
+            .contact-form {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .contact-info {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .hero-image img {
+                width: 280px;
+            }
+        }
+
+        @media screen and (max-width: 400px) {
+            .hero-title {
+                font-size: 18px;
+            }
+            .section-title {
+                font-size: 16px;
+            }
+            .hero-image img {
+                width: 120px;
+            }
+            .feature-card, .how-step {
+                padding: 14px 8px;
+                font-size: 13px;
+            }
+            .team-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 15px;
+            }
+            .team-card {
+                padding: 15px 10px;
+            }
+            .team-avatar {
+                width: 84px;
+                height: 84px;
+                font-size: 25px;
+            }
+            .team-card h3 {
+                font-size: 12px;
+                margin-bottom: 10px;
+            }
+            .social-icon {
+                width: 25px;
+                height: 25px;
+                font-size: 14px;
+            }
+            .faq-question {
+                font-size: 13px;
+                padding: 12px;
+            }
+            .faq-answer {
+                font-size: 13px;
+                padding: 0 12px 12px 12px;
+            }
+            .main-footer {
+                font-size: 12px;
+                padding: 12px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <i class='bx bx-shield-alt'></i>
+                <span>Predictive Transaction Intelligence (BFSI)</span>
+            </div>
+            <ul class="navbar-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#how" class="nav-link">How it works</a></li>
+                <li><a href="#team" class="nav-link">Team</a></li>
+                <li><a href="#faq" class="nav-link">FAQ</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li><a href="Frontend/templates/login.html" class="nav-link nav-signin"><i class='bx bxs-user'></i> Signin/Signup</a></li>
+            </ul>
+            <div class="navbar-toggle">
+                <i class='bx bx-menu'></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+        <div class="hero-content">
+            <h1 class="hero-title">AI-Powered Predictive Transaction Intelligence (BFSI)</h1>
+            <p class="hero-subtitle">
+                Analyze customer transactions and patterns to predict and prevent fraud, powered by Large Language Models.<br>
+                Secure, fast, and easy to use!
+            </p>
+            <a href="Frontend/templates/login.html" class="hero-btn">Get Started</a>
+        </div>
+        <div class="hero-image">
+            <img src="https://via.placeholder.com/380x240?text=AI+Fraud+Detection" alt="Predictive Transaction Intelligence" />
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <h2 class="section-title">Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class='bx bxs-bar-chart-alt-2'></i>
+                <h3>Comprehensive Analytics</h3>
+                <p>Gain insights with detailed transaction analysis, fraud statistics, and data quality metrics.</p>
+            </div>
+            <div class="feature-card">
+                <i class='bx bxs-cloud-upload'></i>
+                <h3>Easy CSV Upload</h3>
+                <p>Upload your dataset in seconds and visualize fraud trends instantly.</p>
+            </div>
+            <div class="feature-card">
+                <i class='bx bxs-data'></i>
+                <h3>Real-time Data Processing</h3>
+                <p>Process and analyze transaction data in real-time with advanced algorithms and instant insights.</p>
+            </div>
+            <div class="feature-card">
+                <i class='bx bx-layer'></i>
+                <h3>AI-Powered Predictions</h3>
+                <p>Harness LLMs for predictive analysis and proactive fraud detection.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-section" id="how">
+        <h2 class="section-title">How It Works</h2>
+        <div class="how-steps">
+            <div class="how-step">
+                <span class="step-number">1</span>
+                <h3>Sign Up / Login</h3>
+                <p>Create your secure account to access the dashboard.</p>
+            </div>
+            <div class="how-step">
+                <span class="step-number">2</span>
+                <h3>Upload Dataset</h3>
+                <p>Upload your customer transaction CSV file for analysis.</p>
+            </div>
+            <div class="how-step">
+                <span class="step-number">3</span>
+                <h3>AI Analysis</h3>
+                <p>Our system uses advanced AI models to analyze and detect potential fraud.</p>
+            </div>
+            <div class="how-step">
+                <span class="step-number">4</span>
+                <h3>View Results</h3>
+                <p>Visualize fraud patterns, statistics, and actionable insights on your dashboard.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section" id="team">
+        <h2 class="section-title">Meet The Team</h2>
+        
+        <!-- Frontend Team -->
+        <div class="team-category">
+            <h3>Frontend Team</h3>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-avatar"><img src="https://ui-avatars.com/api/?name=Talluri+Ranga+Sai+Varun&background=00ffff&color=0a0a0a&size=256" alt="Talluri Ranga Sai Varun"></div>
+                    <h3>Talluri Ranga Sai Varun</h3>
+                    <div class="team-social">
+                        <a href="https://www.linkedin.com/in/ranga-sai-varun-talluri-059b5b275/" class="social-icon" title="LinkedIn" target="_blank">
+                            <i class='bx bxl-linkedin'></i>
+                        </a>
+                        <a href="https://github.com/trangasaivarun" class="social-icon" title="GitHub" target="_blank">
+                            <i class='bx bxl-github'></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar"><img src="https://ui-avatars.com/api/?name=Neella+Bhanusri&background=00ffff&color=0a0a0a&size=256" alt="Neella Bhanusri"></div>
+                    <h3>Neella Bhanusri</h3>
+                    <div class="team-social">
+                        <a href="https://www.linkedin.com/in/bhanusri-neella-399544293" class="social-icon" title="LinkedIn" target="_blank">
+                            <i class='bx bxl-linkedin'></i>
+                        </a>
+                        <a href="https://github.com/BhanusriNeella" class="social-icon" title="GitHub" target="_blank">
+                            <i class='bx bxl-github'></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar"><img src="https://ui-avatars.com/api/?name=Gayatri+Khedekar&background=00ffff&color=0a0a0a&size=256" alt="Gayatri Khedekar"></div>
+                    <h3>Gayatri Khedekar</h3>
+                    <div class="team-social">
+                        <a href="http://linkedin.com/in/gayatri-khedekar-77aa24322" class="social-icon" title="LinkedIn" target="_blank">
+                            <i class='bx bxl-linkedin'></i>
+                        </a>
+                        <a href="https://github.com/Gayatrik2204" class="social-icon" title="GitHub" target="_blank">
+                            <i class='bx bxl-github'></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar"><img src="https://ui-avatars.com/api/?name=Surla+Jhansi&background=00ffff&color=0a0a0a&size=256" alt="Surla Jhansi"></div>
+                    <h3>Surla Jhansi</h3>
+                    <div class="team-social">
+                        <a href="https://www.linkedin.com/in/jhansi-surla-725067375/" class="social-icon" title="LinkedIn" target="_blank">
+                            <i class='bx bxl-linkedin'></i>
+                        </a>
+                        <a href="https://github.com/jhansisurla23" class="social-icon" title="GitHub" target="_blank">
+                            <i class='bx bxl-github'></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar"><img src="https://ui-avatars.com/api/?name=Omi+Singh+Choudhary&background=00ffff&color=0a0a0a&size=256" alt="Omi Singh Choudhary"></div>
+                    <h3>Omi Singh Choudhary</h3>
+                    <div class="team-social">
+                        <a href="https://www.linkedin.com/in/omi-singh-choudhary/" class="social-icon" title="LinkedIn" target="_blank">
+                            <i class='bx bxl-linkedin'></i>
+                        </a>
+                        <a href="https://github.com/OMI-SI" class="social-icon" title="GitHub" target="_blank">
+                            <i class='bx bxl-github'></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar"><img src="https://ui-avatars.com/api/?name=Anirudh&background=00ffff&color=0a0a0a&size=256" alt="Anirudh"></div>
+                    <h3>Anirudh</h3>
+                    <div class="team-social">
+                        <a href="https://www.linkedin.com/in/anirudh-m-v-9596032a1/" class="social-icon" title="LinkedIn" target="_blank">
+                            <i class='bx bxl-linkedin'></i>
+                        </a>
+                        <a href="https://github.com/Anirudh4210" class="social-icon" title="GitHub" target="_blank">
+                            <i class='bx bxl-github'></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Backend Team -->
+        <div class="team-category">
+            <h3>Backend Team</h3>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-avatar"><img src="https://ui-avatars.com/api/?name=Suhas+A+N&background=00ffff&color=0a0a0a&size=256" alt="Suhas A N"></div>
+                    <h3>Suhas A N</h3>
+                    <div class="team-social">
+                        <a href="https://www.linkedin.com/in/suhas-a-n-4427b1223/" class="social-icon" title="LinkedIn" target="_blank">
+                            <i class='bx bxl-linkedin'></i>
+                        </a>
+                        <a href="https://github.com/SuhasAN01" class="social-icon" title="GitHub" target="_blank">
+                            <i class='bx bxl-github'></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar"><img src="https://ui-avatars.com/api/?name=Gowthami+Kandula&background=00ffff&color=0a0a0a&size=256" alt="Gowthami Kandula"></div>
+                    <h3>Gowthami Kandula</h3>
+                    <div class="team-social">
+                        <a href="https://www.linkedin.com/in/gowthami-kandula-77283b23a/" class="social-icon" title="LinkedIn" target="_blank">
+                            <i class='bx bxl-linkedin'></i>
+                        </a>
+                        <a href="https://github.com/Gowthami137" class="social-icon" title="GitHub" target="_blank">
+                            <i class='bx bxl-github'></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar"><img src="https://ui-avatars.com/api/?name=Dike+Harshad&background=00ffff&color=0a0a0a&size=256" alt="Dike Harshad"></div>
+                    <h3>Dike Harshad</h3>
+                    <div class="team-social">
+                        <a href="https://www.linkedin.com/in/harshad-dike" class="social-icon" title="LinkedIn" target="_blank">
+                            <i class='bx bxl-linkedin'></i>
+                        </a>
+                        <a href="https://github.com/Harshad5557" class="social-icon" title="GitHub" target="_blank">
+                            <i class='bx bxl-github'></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="team-card">
+                    <div class="team-avatar"><img src="https://ui-avatars.com/api/?name=H+B+S+Bharath+Kumar&background=00ffff&color=0a0a0a&size=256" alt="H B S Bharath Kumar"></div>
+                    <h3>H B S Bharath Kumar</h3>
+                    <div class="team-social">
+                        <a href="https://www.linkedin.com/in/bharat-kumar-2b2168313/" class="social-icon" title="LinkedIn" target="_blank">
+                            <i class='bx bxl-linkedin'></i>
+                        </a>
+                        <a href="https://github.com/Bharath16304" class="social-icon" title="GitHub" target="_blank">
+                            <i class='bx bxl-github'></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" id="faq">
+        <h2 class="section-title">FAQ</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <button class="faq-question">What is Predictive Transaction Intelligence (BFSI)?</button>
+                <div class="faq-answer">Our AI-powered platform analyzes banking and financial transaction patterns to predict and prevent fraudulent activities in real-time, specifically designed for the Banking, Financial Services, and Insurance sector.</div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">What types of data can I upload for analysis?</button>
+                <div class="faq-answer">You can upload CSV files containing transaction data, customer behavioral patterns, account information, and any financial records that need fraud detection analysis.</div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">How accurate is the fraud detection system?</button>
+                <div class="faq-answer">Our system uses advanced machine learning algorithms and Large Language Models to achieve over 95% accuracy in fraud detection, with continuous learning and improvement.</div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">Can I integrate this with my existing banking systems?</button>
+                <div class="faq-answer">Absolutely! Our platform is designed for seamless integration with existing banking infrastructure, APIs, and core banking systems for real-time monitoring.</div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">How quickly can I get started with the platform?</button>
+                <div class="faq-answer">You can get started immediately by signing up, uploading your dataset, and within minutes you'll have comprehensive fraud analysis and predictive insights.</div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">Does the system work on mobile devices?</button>
+                <div class="faq-answer">Yes, our platform is fully responsive and optimized for mobile devices, allowing you to monitor transactions and receive alerts on-the-go.</div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">What kind of reports and analytics do you provide?</button>
+                <div class="faq-answer">We provide comprehensive analytics including fraud patterns, risk scores, transaction summaries, spending categories, correlation analysis, and detailed visual reports.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <h2 class="section-title">Contact Us</h2>
+        <p style="text-align: center; margin-bottom: 20px; color: var(--text); opacity: 0.8;">Get in touch with us for any questions or support</p>
+        
+        <form class="contact-form">
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" name="firstName" required>
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" name="lastName" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone">
+            </div>
+            <div class="form-group full-width">
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="subject" required>
+            </div>
+            <div class="form-group full-width">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" placeholder="Tell us how we can help you..." required></textarea>
+            </div>
+            <div class="contact-submit">
+                <button type="submit" class="contact-btn">Send Message</button>
+            </div>
+        </form>
+
+        <div class="contact-info">
+            <div class="contact-item">
+                <i class='bx bxs-envelope'></i>
+                <h3>Email</h3>
+                <p>support@predictivetransaction.com</p>
+            </div>
+            <div class="contact-item">
+                <i class='bx bxs-phone'></i>
+                <h3>Phone</h3>
+                <p>+1 (555) 123-4567</p>
+            </div>
+            <div class="contact-item">
+                <i class='bx bxs-map'></i>
+                <h3>Address</h3>
+                <p>123 Tech Street, Innovation City, IC 12345</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <p>&copy; 2025 Predictive Transaction Intelligence (BFSI) Team-A. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Responsive navbar toggle
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggle = document.querySelector('.navbar-toggle');
+            const menu = document.querySelector('.navbar-menu');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            toggle.addEventListener('click', () => {
+                menu.classList.toggle('show');
+            });
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    menu.classList.remove('show');
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                });
+            });
+
+            // FAQ collapse functionality
+            document.querySelectorAll('.faq-question').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const item = this.parentElement;
+                    item.classList.toggle('open');
+                });
+            });
+
+            // Smooth page transitions for navigation buttons
+            const heroBtn = document.querySelector('.hero-btn');
+            const signinBtn = document.querySelector('.nav-signin');
+
+            function addClickTransition(button, href) {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Add clicked class for visual feedback
+                    button.classList.add('clicked');
+                    
+                    // Create page transition overlay
+                    const overlay = document.createElement('div');
+                    overlay.style.cssText = `
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+                        z-index: 9999;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        opacity: 0;
+                        transition: opacity 0.3s ease;
+                    `;
+                    
+                    overlay.innerHTML = `
+                        <div style="text-align: center; color: #00ffff;">
+                            <div style="width: 60px; height: 60px; border: 3px solid rgba(0,255,255,0.3); border-top: 3px solid #00ffff; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+                            <h3 style="font-size: 24px; margin-bottom: 10px; text-shadow: 0 0 10px #00ffff;">Redirecting...</h3>
+                            <p style="font-size: 16px; opacity: 0.8;">Taking you to the login page</p>
+                        </div>
+                        <style>
+                            @keyframes spin {
+                                0% { transform: rotate(0deg); }
+                                100% { transform: rotate(360deg); }
+                            }
+                        </style>
+                    `;
+                    
+                    document.body.appendChild(overlay);
+                    
+                    // Fade in overlay
+                    setTimeout(() => {
+                        overlay.style.opacity = '1';
+                    }, 10);
+                    
+                    // Navigate after transition
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 800);
+                });
+            }
+
+            // Apply transitions to buttons
+            if (heroBtn) {
+                addClickTransition(heroBtn, 'Frontend/templates/login.html');
+            }
+            
+            if (signinBtn) {
+                addClickTransition(signinBtn, 'Frontend/templates/login.html');
+            }
+
+            // Active navigation highlighting based on scroll position
+            function updateActiveNav() {
+                const sections = document.querySelectorAll('section[id]');
+                const navLinks = document.querySelectorAll('.nav-link');
+                
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (window.scrollY >= (sectionTop - 200)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            // Update active nav on scroll
+            window.addEventListener('scroll', updateActiveNav);
+            
+            // Update active nav on page load
+            updateActiveNav();
+
+            // Contact form handling
+            const contactForm = document.querySelector('.contact-form');
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Get form data
+                    const formData = new FormData(contactForm);
+                    const data = Object.fromEntries(formData);
+                    
+                    // Simple validation
+                    if (!data.firstName || !data.lastName || !data.email || !data.subject || !data.message) {
+                        alert('Please fill in all required fields.');
+                        return;
+                    }
+                    
+                    // Simulate form submission
+                    const submitBtn = contactForm.querySelector('.contact-btn');
+                    const originalText = submitBtn.textContent;
+                    
+                    submitBtn.textContent = 'Sending...';
+                    submitBtn.disabled = true;
+                    
+                    setTimeout(() => {
+                        alert('Thank you for your message! We will get back to you soon.');
+                        contactForm.reset();
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    }, 2000);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

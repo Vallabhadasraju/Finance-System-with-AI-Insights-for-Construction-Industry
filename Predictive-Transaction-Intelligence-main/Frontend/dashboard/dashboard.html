@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Fraud Transaction Detection</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Dashboard Header -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <div class="welcome-section">
+                <h1 class="welcome-title">Welcome to Fraud Transaction Detection <span id="userName">User</span>! 🛡️</h1>
+                <p class="welcome-subtitle">Your AI-powered security system is ready</p>
+            </div>
+                                                  <div class="header-controls">
+                  <div class="profile-section">
+                     <div class="profile-icon" onclick="toggleProfileMenu()">
+                         <i class='bx bxs-user-circle'></i>
+                     </div>
+                     <div class="profile-menu" id="profileMenu">
+                    <div class="profile-menu-item">
+                        <i class='bx bxs-user'></i>
+                        <span>My Profile</span>
+                    </div>
+                    <div class="profile-menu-item">
+                        <i class='bx bxs-cog'></i>
+                        <span>Settings</span>
+                    </div>
+                    <div class="profile-menu-item">
+                        <i class='bx bxs-log-out'></i>
+                        <span>Logout</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard Main Content -->
+    <main class="dashboard-main">
+        <!-- Welcome Page with Navigation Cards -->
+        <div class="welcome-container" id="welcomePage">
+            <div class="welcome-header">
+                <h2>🛡️ Fraud Detection Dashboard</h2>
+                <p>Choose an option below to get started with your fraud detection analysis</p>
+            </div>
+            
+            <div class="navigation-cards">
+                <div class="nav-card" onclick="showPage('datasetAnalysis')">
+                    <div class="card-icon">
+                        <i class='bx bxs-data'></i>
+                    </div>
+                    <h3>📊 Dataset Analysis</h3>
+                    <p>Upload and analyze your CSV dataset for comprehensive fraud detection insights</p>
+                    <div class="card-features">
+                        <span class="feature-tag">Data Upload</span>
+                        <span class="feature-tag">Quality Analysis</span>
+                        <span class="feature-tag">Statistics</span>
+                    </div>
+                </div>
+
+                <div class="nav-card" onclick="showPage('modelPerformance')">
+                    <div class="card-icon">
+                        <i class='bx bxs-chart-line'></i>
+                    </div>
+                    <h3>📈 Model Performance</h3>
+                    <p>View detailed performance metrics and accuracy statistics of your fraud detection model</p>
+                    <div class="card-features">
+                        <span class="feature-tag">Accuracy</span>
+                        <span class="feature-tag">Precision</span>
+                        <span class="feature-tag">Recall</span>
+                    </div>
+                </div>
+
+                <div class="nav-card" onclick="showPage('transactionCheck')">
+                    <div class="card-icon">
+                        <i class='bx bxs-shield-check'></i>
+                    </div>
+                    <h3>🔍 Check Transaction</h3>
+                    <p>Input transaction details to get real-time fraud detection analysis</p>
+                    <div class="card-features">
+                        <span class="feature-tag">Real-time</span>
+                        <span class="feature-tag">Instant Results</span>
+                        <span class="feature-tag">Risk Assessment</span>
+                    </div>
+                </div>
+
+                <div class="nav-card" onclick="showPage('transactionHistory')">
+                    <div class="card-icon">
+                        <i class='bx bxs-history'></i>
+                    </div>
+                    <h3>📋 Transaction History</h3>
+                    <p>View all previously checked transactions and their fraud detection results</p>
+                    <div class="card-features">
+                        <span class="feature-tag">History</span>
+                        <span class="feature-tag">Results</span>
+                        <span class="feature-tag">Export</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dataset Analysis Page -->
+        <div class="page-container" id="datasetAnalysisPage" style="display: none;">
+            <div class="page-header">
+                <button class="back-btn" onclick="showPage('welcome')">
+                    <i class='bx bx-arrow-back'></i> Back to Dashboard
+                </button>
+                <h2>📊 Dataset Analysis</h2>
+            </div>
+            
+            <div class="upload-section">
+                <p>Upload your CSV dataset for fraud detection analysis</p>
+                
+                <div class="file-upload-area" id="fileUploadArea">
+                    <div class="upload-icon">
+                        <i class='bx bxs-cloud-upload'></i>
+                    </div>
+                    <h3>Upload CSV File</h3>
+                    <p>Drag & drop your CSV file here or click to browse</p>
+                    <p class="file-requirements">Only .csv files are accepted</p>
+                    <input type="file" id="csvFileInput" accept=".csv" style="display: none;">
+                    <button class="upload-btn" onclick="document.getElementById('csvFileInput').click()">
+                        Choose File
+                    </button>
+                </div>
+
+                <!-- Upload Progress -->
+                <div class="upload-progress" id="uploadProgress" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p id="progressText">Uploading...</p>
+                </div>
+
+                <!-- Analysis Results -->
+                <div class="analysis-results" id="analysisResults" style="display: none;">
+                    <h3>📈 Dataset Analysis Results</h3>
+                    
+                    <!-- Basic Statistics -->
+                    <div class="analysis-section">
+                        <h4>📊 Basic Statistics</h4>
+                        <div class="stats-grid" id="basicStats"></div>
+                    </div>
+
+                    <!-- Data Quality -->
+                    <div class="analysis-section">
+                        <h4>🔍 Data Quality Analysis</h4>
+                        <div class="quality-metrics" id="dataQuality"></div>
+                    </div>
+
+                    <!-- Column Analysis -->
+                    <div class="analysis-section">
+                        <h4>📋 Column Analysis</h4>
+                        <div class="column-analysis" id="columnAnalysis"></div>
+                    </div>
+
+                    <!-- Data Distribution -->
+                    <div class="analysis-section">
+                        <h4>📊 Data Distribution</h4>
+                        <div class="distribution-charts" id="dataDistribution"></div>
+                    </div>
+
+                    <!-- Correlation Analysis -->
+                    <div class="analysis-section">
+                        <h4>🔗 Correlation Analysis</h4>
+                        <div class="correlation-matrix" id="correlationAnalysis"></div>
+                    </div>
+
+                    <!-- Missing Values -->
+                    <div class="analysis-section">
+                        <h4>⚠️ Missing Values Analysis</h4>
+                        <div class="missing-values" id="missingValues"></div>
+                    </div>
+
+                    <!-- Fraud vs Legitimate Analysis -->
+                    <div class="analysis-section">
+                        <h4>🕵️ Fraud vs Legitimate Analysis</h4>
+                        <div class="fraud-analysis" id="fraudAnalysis"></div>
+                    </div>
+
+                    <!-- Transaction Summary -->
+                    <div class="analysis-section">
+                        <h4>💰 Transaction Summary</h4>
+                        <div class="transaction-summary" id="transactionSummary"></div>
+                    </div>
+
+                    <!-- Spending Categories -->
+                    <div class="analysis-section">
+                        <h4>📊 Spending Categories</h4>
+                        <div class="spending-categories" id="spendingCategories"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Model Performance Page -->
+        <div class="page-container" id="modelPerformancePage" style="display: none;">
+            <div class="page-header">
+                <button class="back-btn" onclick="showPage('welcome')">
+                    <i class='bx bx-arrow-back'></i> Back to Dashboard
+                </button>
+                <h2>📈 Model Performance</h2>
+            </div>
+            
+            <div class="performance-section">
+                <div class="performance-header">
+                    <h3>🎯 Performance Metrics</h3>
+                    <p>Comprehensive evaluation of your fraud detection model's performance</p>
+                </div>
+                
+                <div class="metrics-table-container">
+                    <table class="performance-table">
+                        <thead>
+                            <tr>
+                                <th>Metric</th>
+                                <th>Value</th>
+                                <th>Status</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><i class='bx bxs-target-lock'></i> Accuracy</td>
+                                <td class="metric-value">0.00</td>
+                                <td><span class="status-badge pending">Pending</span></td>
+                                <td>Overall correctness of predictions</td>
+                            </tr>
+                            <tr>
+                                <td><i class='bx bxs-precision'></i> Precision</td>
+                                <td class="metric-value">0.00</td>
+                                <td><span class="status-badge pending">Pending</span></td>
+                                <td>True positives / (True positives + False positives)</td>
+                            </tr>
+                            <tr>
+                                <td><i class='bx bxs-balance'></i> F1-Score</td>
+                                <td class="metric-value">0.00</td>
+                                <td><span class="status-badge pending">Pending</span></td>
+                                <td>Harmonic mean of precision and recall</td>
+                            </tr>
+                            <tr>
+                                <td><i class='bx bxs-search-alt-2'></i> Recall</td>
+                                <td class="metric-value">0.00</td>
+                                <td><span class="status-badge pending">Pending</span></td>
+                                <td>True positives / (True positives + False negatives)</td>
+                            </tr>
+                            <tr>
+                                <td><i class='bx bxs-check-circle'></i> Specificity</td>
+                                <td class="metric-value">0.00</td>
+                                <td><span class="status-badge pending">Pending</span></td>
+                                <td>True negatives / (True negatives + False positives)</td>
+                            </tr>
+                            <tr>
+                                <td><i class='bx bxs-chart'></i> AUC Score</td>
+                                <td class="metric-value">0.00</td>
+                                <td><span class="status-badge pending">Pending</span></td>
+                                <td>Area Under the ROC Curve</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Confusion Matrix as a raw table (no chart) -->
+                <div class="analysis-section">
+                    <h4>📊 Confusion Matrix</h4>
+                    <table class="performance-table" id="confusionMatrixTable">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Pred: Legit (0)</th>
+                                <th>Pred: Fraud (1)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Actual: Legit (0)</strong></td>
+                                <td id="cm_tn">-</td>
+                                <td id="cm_fp">-</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Actual: Fraud (1)</strong></td>
+                                <td id="cm_fn">-</td>
+                                <td id="cm_tp">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction Check Page -->
+        <div class="page-container" id="transactionCheckPage" style="display: none;">
+            <div class="page-header">
+                <button class="back-btn" onclick="showPage('welcome')">
+                    <i class='bx bx-arrow-back'></i> Back to Dashboard
+                </button>
+                <h2>🔍 Check Transaction</h2>
+            </div>
+            
+            <div class="transaction-check-section">
+                <div class="check-form-container">
+                    <h3>📝 Transaction Details</h3>
+                    <p>Enter the transaction details below to perform fraud detection analysis</p>
+                    
+                    <form class="transaction-form" id="transactionForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="transactionAmount">
+                                    <i class='bx bxs-dollar-circle'></i>
+                                    Transaction Amount
+                                </label>
+                                <input type="number" id="transactionAmount" name="transactionAmount" 
+                                       placeholder="Enter amount" step="0.01" min="0" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="kycVerified">
+                                    <i class='bx bxs-user-check'></i>
+                                    KYC Verified
+                                </label>
+                                <select id="kycVerified" name="kycVerified" required>
+                                    <option value="">Select option</option>
+                                    <option value="Yes">Yes</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="accountAge">
+                                    <i class='bx bxs-calendar'></i>
+                                    Account Age (Days)
+                                </label>
+                                <input type="number" id="accountAge" name="accountAge" 
+                                       placeholder="Enter days" min="0" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="channel">
+                                    <i class='bx bxs-devices'></i>
+                                    Channel
+                                </label>
+                                <select id="channel" name="channel" required>
+                                    <option value="">Select channel</option>
+                                    <option value="Mobile">Mobile</option>
+                                    <option value="POS">POS</option>
+                                    <option value="ATM">ATM</option>
+                                    <option value="Web">Web</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label for="transactionDateTime">
+                                    <i class='bx bxs-time'></i>
+                                    Date and Time of Transaction
+                                </label>
+                                <input type="datetime-local" id="transactionDateTime" name="transactionDateTime" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="check-transaction-btn" onclick="checkTransaction()">
+                                <i class='bx bxs-shield-check'></i>
+                                Check Transaction
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Transaction Result (Hidden by default) -->
+                <div class="transaction-result" id="transactionResult" style="display: none;">
+                    <h3>🎯 Fraud Detection Result</h3>
+                    <div class="result-cards-grid">
+                        <div class="result-card">
+                            <div class="result-icon">
+                                <i class='bx bxs-shield-x'></i>
+                            </div>
+                            <div class="result-content">
+                                <h4>Prediction</h4>
+                                <p class="result-status">Legitimate Transaction</p>
+                            </div>
+                        </div>
+                        <div class="result-card">
+                            <div class="result-icon">
+                                <i class='bx bxs-bolt'></i>
+                            </div>
+                            <div class="result-content">
+                                <h4>Risk Score</h4>
+                                <p class="result-risk">0.00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="result-reason">
+                        <h4>Reason/Rules Triggered</h4>
+                        <p class="result-description">No anomalies detected</p>
+                    </div>
+
+                    <div class="analysis-section">
+                        <h4>📋 Result Details</h4>
+                        <table class="performance-table" id="transactionResultTable">
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Prediction</th>
+                                    <th>Risk Score</th>
+                                    <th>Reason</th>
+                                    <th>Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="res_tx_id">-</td>
+                                    <td id="res_prediction">-</td>
+                                    <td id="res_risk">-</td>
+                                    <td id="res_reason">-</td>
+                                    <td id="res_timestamp">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Transaction History Page -->
+        <div class="page-container" id="transactionHistoryPage" style="display: none;">
+            <div class="page-header">
+                <button class="back-btn" onclick="showPage('welcome')">
+                    <i class='bx bx-arrow-back'></i> Back to Dashboard
+                </button>
+                <h2>📋 Transaction History</h2>
+            </div>
+            
+            <div class="history-section">
+                <div class="history-header">
+                    <h3>📊 All Checked Transactions</h3>
+                    <p>Complete history of all transactions analyzed for fraud detection</p>
+                </div>
+                
+                <div class="history-controls">
+                    <button class="history-btn clear-btn" onclick="clearTransactionHistory()">
+                        <i class='bx bxs-trash'></i>
+                        Clear All Transactions
+                    </button>
+                    <button class="history-btn download-btn" onclick="downloadTransactionHistory()">
+                        <i class='bx bxs-download'></i>
+                        Download Excel
+                    </button>
+                </div>
+                
+                <div class="history-table-container">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th><i class='bx bxs-user'></i> Customer ID</th>
+                                <th><i class='bx bxs-dollar-circle'></i> Transaction Amount</th>
+                                <th><i class='bx bxs-user-check'></i> KYC Verified</th>
+                                <th><i class='bx bxs-calendar'></i> Account Age</th>
+                                <th><i class='bx bxs-devices'></i> Channel</th>
+                                <th><i class='bx bxs-time'></i> Date & Time</th>
+                                <th><i class='bx bxs-shield'></i> is_fraud</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <tr class="no-data">
+                                <td colspan="7">
+                                    <div class="no-data-message">
+                                        <i class='bx bxs-inbox'></i>
+                                        <p>No transactions checked yet</p>
+                                        <span>Check some transactions to see them appear here</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Charts section (moved here) -->
+                <div class="analysis-section">
+                    <h4>📈 ROC Curve</h4>
+                    <canvas id="rocCurveChart" height="260"></canvas>
+                </div>
+
+                <div class="analysis-section">
+                    <h4>🕵️ Fraud vs Legit</h4>
+                    <canvas id="fraudVsLegitChart" height="260"></canvas>
+                </div>
+
+                <div class="analysis-section">
+                    <h4>📉 Fraud% Over Time</h4>
+                    <canvas id="fraudTrendChart" height="260"></canvas>
+                </div>
+
+                <div class="analysis-section">
+                    <h4>🧭 Channel-Wise Fraud Distribution</h4>
+                    <canvas id="channelFraudPie" height="260"></canvas>
+                </div>
+
+                <div class="analysis-section">
+                    <h4>💵 Transaction Amount vs Fraud</h4>
+                    <canvas id="amountVsFraudScatter" height="280"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+                                       <!-- Profile Card Modal -->
+       <div class="profile-modal" id="profileModal">
+           <div class="profile-modal-content">
+               <div class="profile-modal-header">
+                   <h3>My Profile</h3>
+                   <button class="close-profile" onclick="closeProfileModal()" aria-label="Close profile">
+                       <i class='bx bx-x'></i>
+                   </button>
+               </div>
+               <div class="profile-modal-body">
+                   <div class="profile-card">
+                       <div class="profile-left">
+                           <div class="profile-photo">
+                               <i class='bx bxs-user'></i>
+                           </div>
+                       </div>
+                       <div class="profile-right">
+                           <div class="profile-details">
+                               <div class="detail-item">
+                                   <label><i class='bx bxs-user'></i> Full Name</label>
+                                   <div class="detail-value" id="profileFullName">Loading...</div>
+                               </div>
+                               <div class="detail-item">
+                                   <label><i class='bx bxs-envelope'></i> Email</label>
+                                   <div class="detail-value" id="profileEmail">Loading...</div>
+                               </div>
+                               <div class="detail-item">
+                                   <label><i class='bx bxs-phone'></i> Mobile</label>
+                                   <div class="detail-value" id="profileMobile">Loading...</div>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+       </div>
+
+     <!-- Logout Confirmation Modal -->
+     <div class="logout-modal" id="logoutModal">
+        <div class="logout-modal-content">
+            <div class="logout-modal-header">
+                <div class="logout-icon">
+                    <i class='bx bxs-log-out'></i>
+                </div>
+                <h3>Confirm Logout</h3>
+            </div>
+            <div class="logout-modal-body">
+                <p>Are you sure you want to logout from your dashboard?</p>
+            </div>
+            <div class="logout-modal-actions">
+                <button class="btn-cancel" onclick="cancelLogout()">
+                    <i class='bx bx-x'></i>
+                    Cancel
+                </button>
+                <button class="btn-confirm" onclick="confirmLogout()">
+                    <i class='bx bx-check'></i>
+                    Yes, Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+                   <!-- Settings Modal -->
+      <div class="settings-modal" id="settingsModal">
+          <div class="settings-modal-content">
+              <div class="settings-modal-header">
+                  <h3><i class='bx bxs-cog'></i> Settings</h3>
+                  <button class="close-settings" onclick="closeSettingsModal()" aria-label="Close settings">
+                      <i class='bx bx-x'></i>
+                  </button>
+              </div>
+              <div class="settings-modal-body">
+                  <div class="settings-disabled">
+                      <div class="disabled-icon">
+                          <i class='bx bxs-lock'></i>
+                      </div>
+                      <h4>Settings Currently Unavailable</h4>
+                      <p>Settings panel is temporarily disabled. Please check back later.</p>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+     <!-- Firebase SDK -->
+     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+     <script src="../templates/firebase-config.js"></script>
+     
+     <script src="dashboard.js"></script>
+ </body>
+ </html>
